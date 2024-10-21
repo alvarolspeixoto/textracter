@@ -32,7 +32,11 @@ async def analyze(file: UploadFile = File(...), feature_type: FeatureType = Feat
         upload_file_to_s3(file, BUCKET_NAME)
         response = analyze_document(file.filename, BUCKET_NAME, feature_type, queries)
 
-        return JSONResponse(content=response, status_code=200)
+        filtered_blocks = [block for block in response['Blocks'] if block['BlockType'] in ['WORD', 'QUERY', 'QUERY_RESULT']]
+
+        filtered_response = {**response, 'Blocks': filtered_blocks}
+
+        return JSONResponse(content=filtered_response, status_code=200)
     except NoCredentialsError:
         return JSONResponse(content={"error": "Credenciais da AWS não encontradas."}, status_code=400)
     except PartialCredentialsError:
