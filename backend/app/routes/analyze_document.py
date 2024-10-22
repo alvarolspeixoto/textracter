@@ -25,7 +25,7 @@ async def analyze(file: UploadFile = File(...), feature_type: FeatureType = Feat
     if not feature_type:
         return JSONResponse(content={"error": "Pelo menos um tipo de recurso deve ser selecionado."}, status_code=400)
 
-    if feature_type == FeatureType.QUERIES.value and not queries or queries == ['']:
+    if feature_type == FeatureType.QUERIES.value and (not queries or queries == ['']):
         return JSONResponse(content={"error": "Nenhuma consulta foi fornecida."}, status_code=400)
 
     try:
