@@ -4,7 +4,7 @@ from app.routes import analyze_document
 from fastapi.middleware.cors import CORSMiddleware
 
 
-app = FastAPI()
+app = FastAPI(root_path="/api")
 
 app.add_middleware(
     CORSMiddleware,
@@ -13,9 +13,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.include_router(analyze_document.router)
+app.include_router(analyze_document.router, prefix="/api")
 
-@app.get("/api")
+@app.get("/")
 def test():
     return {"message": "Hello World"}
 
