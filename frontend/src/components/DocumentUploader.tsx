@@ -12,7 +12,6 @@ interface DocumentUploaderProps {
 const DocumentUploader: React.FC<DocumentUploaderProps> = ({ onAnalyze }) => {
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [featureType, setFeatureType] = useState("TABLES");
   const [analysisResult, setAnalysisResult] = useState<AnalyzeDocumentResponse | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,14 +30,14 @@ const DocumentUploader: React.FC<DocumentUploaderProps> = ({ onAnalyze }) => {
 
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("feature_type", featureType);
-
+    formData.append("feature_type", "TABLES");
+    formData.forEach((value, key) => {
+      console.log(`${key}:`, value);
+    });
     try {
       const result = await onAnalyze(formData);
       setAnalysisResult(result);
       setError(null);
-      setError(null);
-
     } catch {
       setError('Ocorreu um erro ao enviar o arquivo.');
     }
@@ -65,7 +64,7 @@ const DocumentUploader: React.FC<DocumentUploaderProps> = ({ onAnalyze }) => {
               cursor-pointer"
             />
           </div>
-          
+
           {previewUrl && (
             <div className="mb-4">
               <p className="text-gray-600 mb-2">Preview:</p>
@@ -86,18 +85,6 @@ const DocumentUploader: React.FC<DocumentUploaderProps> = ({ onAnalyze }) => {
               )}
             </div>
           )}
-
-          <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2">Feature Type:</label>
-            <select
-              value={featureType}
-              onChange={(e) => setFeatureType(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded text-gray-700 bg-white focus:ring-2 focus:ring-orange-500"
-            >
-              <option value="TABLES">Tables</option>
-              <option value="QUERIES">Queries</option>
-            </select>
-          </div>
 
           <button
             type="submit"

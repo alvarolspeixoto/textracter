@@ -16,18 +16,6 @@ export default function Result({ response }: ResultPageProps) {
     ? (wordBlocks.reduce((sum, block) => sum + block.Confidence, 0) / totalWords).toFixed(2)
     : 0;
 
-  // Filtrar QUERY e QUERY_RESULT
-  const queries = response.Blocks.filter(block => block.BlockType === "QUERY");
-  const queryResults = response.Blocks.filter(block => block.BlockType === "QUERY_RESULT");
-
-  // Criar um mapeamento de resultados de consulta por ID
-  const queryResultsMap = queryResults.reduce((acc, block) => {
-    acc[block.Id] = block;
-    return acc;
-  }, {} as Record<string, typeof queryResults[0]>);
-
-  console.log(queryResultsMap);
-
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Resultado da Análise do Documento</h1>
@@ -45,20 +33,6 @@ export default function Result({ response }: ResultPageProps) {
         {concatenatedWords && <p>Texto Concatenado: {concatenatedWords}</p>}
       </div>
 
-      {/* Div para blocos do tipo QUERY e suas respostas QUERY_RESULT */}
-      <h2 className="text-lg font-semibold mb-2">Consultas e Resultados:</h2>
-      {queries.map((queryBlock) => (
-        <div key={queryBlock.Id} className="border p-2 mb-2">
-          <h3 className="font-medium">Query: {queryBlock.Query.Text}</h3>
-          {queryResultsMap[queryBlock.Id] && (
-            <div className="mt-2 border-t pt-2">
-              <h4 className="font-medium">Resultado da Query:</h4>
-              <p>{queryResultsMap[queryBlock.Id].Text}</p>
-              <p>Confiança: {queryResultsMap[queryBlock.Id].Confidence}%</p>
-            </div>
-          )}
-        </div>
-      ))}
     </div>
   );
 }

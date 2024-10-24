@@ -10,6 +10,7 @@ export default function Home() {
   const handleAnalyze = async (formData: FormData): Promise<AnalyzeDocumentResponse | undefined> => {
     try {
       const backendBaseUrl = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
+      // const backendBaseUrl = "http://localhost:8000/api";
       const response = await fetch(`${backendBaseUrl}/analyze-document`, {
         method: 'POST',
         body: formData,
