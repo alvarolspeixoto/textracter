@@ -2,14 +2,14 @@
 
 import { useState } from 'react';
 import DocumentUploader from '../components/DocumentUploader';
+import { AnalyzeDocumentResponse } from '@/interface/types';
 
 export default function Home() {
-  const [analyzedData, setAnalyzedData] = useState(null);
   const [error, setError] = useState('');
 
-  const handleAnalyze = async (formData: FormData) => {
+  const handleAnalyze = async (formData: FormData): Promise<AnalyzeDocumentResponse | undefined> => {
     try {
-      const response = await fetch('/api/analyze-document', {
+      const response = await fetch('http://localhost:8000/analyze-document', {
         method: 'POST',
         body: formData,
       });
@@ -21,10 +21,10 @@ export default function Home() {
       }
 
       const data = await response.json();
-      setAnalyzedData(data);
       setError('');
-    } catch (err) {
-      setError(`An error occurred while analyzing the document: ${err}`);
+      return data;
+    } catch {
+      setError("An error occurred while analyzing the document.");
     }
   };
 
@@ -33,16 +33,8 @@ export default function Home() {
       <h1 className="text-2xl w-fit mx-auto font-bold mb-6 ">Document Analysis</h1>
       <DocumentUploader onAnalyze={handleAnalyze} />
 
-      {error && <p className="text-red-500 mt-4">{error}</p>}
+      {error && <p className="mx-auto text-red-500 mt-4">{error}</p>}
 
-      {analyzedData && (
-        <div className="mt-6">
-          <h2 className="text-2xl font-bold">Analysis Result</h2>
-          <pre className="bg-gray-200 p-4 rounded">
-            {JSON.stringify(analyzedData, null, 2)}
-          </pre>
-        </div>
-      )}
     </div>
   );
 }
